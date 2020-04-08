@@ -7,7 +7,7 @@
 // This is the high-level Client interface.
 // The low-level implementation is in transport.go.
 
-package http
+package ghttp
 
 import (
 	"crypto/tls"

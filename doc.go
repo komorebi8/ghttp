@@ -104,4 +104,4 @@ package takes precedence over the net/http package's built-in HTTP/2
 support.
 
 */
-package http
+package ghttp

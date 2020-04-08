@@ -8,7 +8,7 @@
 // RFC 1929.
 //
 
-package http
+package ghttp
 
 import (
 	"context"

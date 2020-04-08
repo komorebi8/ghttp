@@ -4,7 +4,7 @@
 
 // HTTP server. See RFC 7230 through 7235.
 
-package http
+package ghttp
 
 import (
 	"bufio"
