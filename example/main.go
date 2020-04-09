@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"net/http"
 	"github.com/kunnpuu/ghttp"
+	"net/http"
 )
 
 func main() {
