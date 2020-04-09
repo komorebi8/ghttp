@@ -8,11 +8,12 @@ package ghttp
 import (
 	"bufio"
 	"bytes"
-	"github.com/panjf2000/gnet/pool/goroutine"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/panjf2000/gnet"
+	"github.com/panjf2000/gnet/pool/goroutine"
 )
 
 type GServer struct {
@@ -24,8 +25,15 @@ type GServer struct {
 func (s *GServer) OnInitComplete(srv gnet.Server) (action gnet.Action) {
 	log.Printf("HTTP server is listening on %s (multi-cores: %t, loops: %d)\n",
 		srv.Addr.String(), srv.Multicore, srv.NumEventLoop)
-	s.pool = goroutine.Default()
 	return
+}
+
+func (s *GServer) OnOpened(c gnet.Conn) (out []byte, action gnet.Action) {
+	return
+}
+
+func (s *GServer) PreWrite() {
+
 }
 
 func (s *GServer) React(frame []byte, c gnet.Conn) (out []byte, action gnet.Action) {
@@ -38,7 +46,6 @@ func (s *GServer) React(frame []byte, c gnet.Conn) (out []byte, action gnet.Acti
 	// handle the request
 	req, err := http.ReadRequest(bufio.NewReader(bytes.NewBuffer(frame)))
 	if err != nil {
-		log.Printf("bad request", req)
 		out = InternalErrorServerResponseBytes
 		action = gnet.Close
 		return
@@ -71,11 +78,18 @@ func (s *GServer) React(frame []byte, c gnet.Conn) (out []byte, action gnet.Acti
 }
 
 func (s *GServer) OnClosed(c gnet.Conn, err error) gnet.Action {
-	return gnet.Close
+	return gnet.None
+}
+
+func (s *GServer) Tick() (delay time.Duration, action gnet.Action) {
+	return
 }
 
 func ListenAndServe(addr string, handler http.Handler) error {
 	server := new(GServer)
+	server.handler = handler
+	server.pool = goroutine.Default()
+	defer server.pool.Release()
 	return gnet.Serve(server, "tcp://" + addr, gnet.WithMulticore(true))
 }
 
