@@ -46,7 +46,7 @@ func (resp *GResponse) Bytes() []byte {
 	timeBytes = time.Now().AppendFormat(timeBytes, "Mon, 02 Jan 2006 15:04:05 GMT")
 	resp.handlerHeader.Set("Date", string(timeBytes))
 	if ct := resp.handlerHeader.Get("Content-Type"); ct == "" {
-		resp.handlerHeader.Set("Content-Type", "application/plain; charset=utf-8")
+		resp.handlerHeader.Set("Content-Type", "text/plain")
 	}
 	bodyBytes := resp.body.Bytes()
 	if cl := resp.handlerHeader.Get("Content-Length"); cl == "" {
